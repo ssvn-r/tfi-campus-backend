@@ -111,3 +111,41 @@ Los datos viven en memoria y se reinician con el servidor. Todavía no hay
 inicio de sesión: todas las operaciones se resuelven como si las hiciera un
 usuario de prueba fijo. Ver `../docs/decisiones-tecnicas.md` para el detalle
 de por qué.
+
+## El campus de demostración
+
+Una base recién puesta en línea tiene el plan de estudios cargado y nada más:
+módulos vacíos, muro sin novedades, foro sin temas y tableros en cero. Así no
+se puede mostrar lo que el campus hace.
+
+`app/demo/` arma un campus completo —cátedras, estudiantes, los planes de las
+tres carreras, el contenido de cada módulo con sus documentos en PDF,
+novedades, foro, mensajes, mesas de examen, entregas, notas y asistencia— y
+`app/sembrar_demo.py` lo carga:
+
+```
+python -m app.sembrar_demo             # muestra qué haría, sin escribir
+python -m app.sembrar_demo --subir     # lo carga
+python -m app.sembrar_demo --subir --rehacer   # aunque ya se haya corrido
+```
+
+Se corre **a mano y con el servidor apagado**, como `importar_estructura`: lo
+que carga es contenido de ejemplo y no tiene por qué aparecer en la base de la
+facultad porque alguien reinició el proceso. Después hay que reiniciar el
+servidor, que no se entera de lo que se escribió por afuera.
+
+Tres cosas que vale saber:
+
+- **No pisa nada.** Cada registro se busca por su clave natural —el correo de
+  una persona, el código de una materia, el título de una novedad— y se crea
+  solo si falta.
+- **Los documentos se generan**, no viajan en el repositorio: `demo/documentos.py`
+  escribe los PDF a mano (sin dependencias) y se suben a Cloudflare R2 por el
+  mismo camino que usa un docente desde la pantalla.
+- **Las cuentas que ya existen no se tocan.** La gente que se agrega es
+  población del campus y no tiene acceso en Firebase Authentication: aparece en
+  los módulos, en el foro y en las planillas, pero no entra.
+
+El texto de cada materia —fundamentación, unidades y bibliografía— está en
+`demo/catalogo.py`. Es lo único escrito a mano; el resto se arma a partir de
+eso.
