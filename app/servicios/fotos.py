@@ -35,6 +35,13 @@ import secrets
 # aprovecha mejor la caché del navegador.
 _SECRETO = (os.environ.get("FIRMA_FOTOS") or secrets.token_hex(32)).encode()
 
+# El dominio con el que el navegador llega a este servidor. Vacío cuando el
+# frontend y el backend comparten origen (en desarrollo, por el proxy de
+# Vite): la dirección queda relativa. Con el frontend en GitHub Pages y el
+# backend en Render, una dirección relativa se buscaría en github.io, así que
+# hay que darla completa: URL_PUBLICA=https://tfi-campus-backend.onrender.com
+_URL_PUBLICA = (os.environ.get("URL_PUBLICA") or "").strip().rstrip("/")
+
 
 def firma(objeto: str) -> str:
     """Doce caracteres alcanzan: hay que adivinarlos **y** acertar la foto."""
@@ -55,7 +62,7 @@ def direccion_de_archivo(objeto: str) -> str:
     """
     from urllib.parse import quote
 
-    return f"/api/archivos/{firma(objeto)}/{quote(objeto)}"
+    return f"{_URL_PUBLICA}/api/archivos/{firma(objeto)}/{quote(objeto)}"
 
 
 def direccion(persona: dict) -> str | None:
@@ -63,4 +70,4 @@ def direccion(persona: dict) -> str | None:
     objeto = persona.get("foto")
     if not objeto:
         return None
-    return f"/api/usuarios/{persona['id']}/foto?f={firma(objeto)}"
+    return f"{_URL_PUBLICA}/api/usuarios/{persona['id']}/foto?f={firma(objeto)}"
