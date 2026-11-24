@@ -1,15 +1,42 @@
+# --- Credenciales: nada de esto puede subirse ---
+# La clave de la cuenta de servicio de Firebase da acceso de lectura y
+# escritura a todo Firestore. Si alguna vez llega a subirse no alcanza con
+# borrarla del repositorio: queda en el historial y hay que revocarla.
+.env
+.env.*
+!.env.example
+firebase-key.json
+*-key.json
+serviceAccount*.json
+*.pem
+
+# --- Python ---
 .venv/
 venv/
 __pycache__/
+*.pyc
 *.py[cod]
+*.egg-info/
+build/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage*
-.env.*
-!.env.example
-.env
-*.egg-info/
-build/
-ca-sistema.pem
-firebase-key.json
+htmlcov/
+
+# --- Editores y sistemas operativos ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Registros y temporales ---
+*.log
+.cache/
+tmp/
+
+# --- Herramientas de asistencia ---
+CLAUDE.md
+.claude/
